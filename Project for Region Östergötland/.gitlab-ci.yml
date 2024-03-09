@@ -1,0 +1,39 @@
+image: node:latest
+
+stages:
+  - test
+  - build_image
+
+test:
+  stage: test
+  script:
+    - cd react_app_sqlite/frontend
+    - npm install jest
+    - npm test
+  artifacts:
+    paths:
+      - build/report/
+
+
+
+build_image:
+  image: docker:latest
+  stage: build_image
+  only:
+    - main
+
+  variables:
+    REPOSITORY_NAME: gitlab.liu.se:5000/masor844/c4-tddc88
+    IMAGE_NAME: frontend
+    IMAGE_TAG: latest
+
+  before_script:
+    #Already navigated to frontend directory#
+    #Credentials for the Gitlab Container registry
+    - docker login --creds "${CI_REGISTRY_USER}:${CI_JOB_TOKEN}" "${IMAGE_NAME}" "docker://${CI_REGISTRY_IMAGE}/${IMAGE_NAME}:latest" && exit 0 || true
+    #- docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN #CI_REGISTRY_PASSWORD
+  script:
+    #Build the container
+    - docker build -t $REPOSITORY_NAME/$IMAGE_NAME:$IMAGE_TAG .
+    - docker push $REPOSITORY_NAME/$IMAGE_NAME:$IMAGE_TAG
+

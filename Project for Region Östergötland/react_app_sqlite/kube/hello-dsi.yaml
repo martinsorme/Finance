@@ -1,0 +1,117 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-deployment
+  labels:
+    app: hello
+spec:
+  replicas: 1 # How many replicas we want
+  selector:   # How do we indentify pods we should manage?
+    matchLabels:
+      app: hello # Match all nodes with this label
+  template: # How should pods within this deployment be created?
+    metadata:
+      labels:
+        app: hello # Specify a label, used in the above selector
+    spec:
+
+      imagePullSecrets:
+      - name: c4-regcred #pulls the token from the secret created #c4-regcred för docker login på kommandrad (user, pwd, email)
+
+      containers:
+
+        - name: frontend
+          image: gitlab.liu.se:5000/masor844/c4-tddc88/frontend-11-21 #crccheck/hello-world #Specify what image we want to use
+          ports:
+          - containerPort: 3000 #8000 # Specify what port our container is listening on. ##VERKAR INTE SPELA NÅGON ROLL
+            protocol: TCP
+          resources: # Specify what resources we need...
+            limits: # ...both absolute limits...
+              cpu: 6
+              memory: 6Gi
+            requests: # ...and what we probably will get by with.
+              cpu: 3
+              memory: 4Gi #VIKTIGT ATT KONFIGURERA KORREKT DATAMÄNGD
+
+        - name: backend
+          image: gitlab.liu.se:5000/masor844/c4-tddc88/backend-11-21 #gitlab.liu.se:5000/masor844/c4-tddc88/hello-world #Specify what image we want to use
+          ports:
+          - containerPort: 5001 #8000 # Specify what port our container is listening on. ##VERKAR INTE SPELA NÅGON ROLL
+            protocol: TCP
+          resources: # Specify what resources we need...
+            limits: # ...both absolute limits...
+              cpu: 2
+              memory: 2Gi
+            requests: # ...and what we probably will get by with.
+              cpu: 1
+              memory: 1Gi #VIKTIGT ATT KONFIGURERA KORREKT DATAMÄNGD
+
+
+
+
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: hello
+  name: hello-service
+spec:
+  ports:
+  - name: frontend # This port is named `web`...
+    port: 80  # ... and should be exposed on port 80, ... #ATT BYTA GER EN 404 PAGE NOT FOUND
+    protocol: TCP # ... using TCP ...
+    targetPort: 3000 # ... to expose port 8000 of internal pods ...
+
+
+  - name: backend # This port is named `web`...
+    port: 5001 # ... and should be exposed on port 80, ... #ATT BYTA GER EN 404 PAGE NOT FOUND
+    protocol: TCP # ... using TCP ...
+    targetPort: 5001 # ... to expose port 8000 of internal pods ...
+
+  selector: # ... designated by the selector 'hello' ...
+    app: hello
+  type: ClusterIP # ... to an internal cluster IP address
+
+
+
+
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations: # This is information to the Ingress modules of kubernetes, to note that you want the endpoint publicly accessible.
+    #kubernetes.io/ingress.class:
+  name: hello-public
+  labels:
+    app: hello
+spec:
+  ingressClassName: nginx-public
+  rules:
+    - host: tddc88-ht23-project4.kubernetes-public.it.liu.se
+      http:
+        paths:
+        - path: / #hostdomän/path-variabel
+          pathType: Prefix #ImplementationSpecific
+          backend:
+            service:
+              name: hello-service
+              port:
+                number: 80 #NÄR DENNA ÄNDRAS FÅR VI EN 404 PAGE NOT FOUND
+
+
+
+
+
+        #- path: /frontend
+        #  pathType: ImplementationSpecific
+        #  backend:
+        #    service:
+        #      name: hello-service
+        #      port:
+        #        number: 80 #NÄR DENNA ÄNDRAS FÅR VI EN 404 PAGE NOT FOUND
+

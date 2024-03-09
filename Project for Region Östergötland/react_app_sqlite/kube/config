@@ -1,0 +1,19 @@
+apiVersion: v1
+clusters:
+- cluster:
+    server: https://10.216.0.19
+    certificate-authority-data: liu-k8s.cert
+  name: tddc88
+contexts:
+- context:
+    cluster: tddc88
+    namespace: tddc88-ht23-project4
+    user: tddc88
+  name: tddc88
+current-context: tddc88
+kind: Config
+preferences: {}
+users:
+- name: tddc88
+  user:
+    token: c4-token.cert
