@@ -25,6 +25,10 @@ Labs in Machine learning
 - Lab 2 covers advanced regression techniques (lasso) and classification methods (decision trees, SVM) for various applications.
 - Lab 3 covers kernel methods and neural networks for tasks like temperature prediction, spam classification and solving mathematical functions. 
 
+### Development of a large application of Region Östegötland
+
+Collaborating with 25 other students and Region Östergötland, we made a large application for managing tasks and different teams within the healthcare sector in the region. 
+
 ### Others
 
 Java game: Made a game together with a friend connected to a Java course at LiU. 
