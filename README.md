@@ -3,7 +3,7 @@
 Welcome to my GitHub portfolio, where I share some of my work. 
 The portfolio covers the following areas: 
 ### Financial risk 
-Language: Matlab
+Language: Matlab.
 Portfolio metrics: 
 - Estimations of volatility and different types of methods for calculating Value at Risk (VaR).
 - The VaR methods include: Exponensionally Weighted Moving Average (EWMA), Hull & White, Rolling Window, Extreme Value Theory (EVT). 
