@@ -31,5 +31,5 @@ Collaborating with 25 other students and Region Östergötland, we made a large 
 
 ### Others
 
-Java game: Made a game together with a friend connected to a Java course at LiU. 
+Java game: Made a game together with a friend. 
 
