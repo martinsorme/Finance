@@ -2,6 +2,17 @@
 
 Welcome to my GitHub portfolio, where I share some of my work. \
 The portfolio covers the following areas: 
+### Machine learning
+Language: R. \
+Labs in Machine learning 
+- Lab 1 focuses on classification and prediction using KNN, linear regression, ridge regression and logistic regression.
+- Lab 2 covers advanced regression techniques (lasso) and classification methods (decision trees, SVM) for various applications.
+- Lab 3 covers kernel methods and neural networks for tasks like temperature prediction, spam classification and solving mathematical functions. 
+
+### Development of a large application of Region Östegötland
+Main languages: Python & TypeScript. \
+Collaborating with 25 other students and Region Östergötland, we made a large application for managing tasks and different teams within the healthcare sector in the region. 
+
 ### Financial risk 
 Language: MATLAB. \
 Portfolio metrics: 
@@ -18,18 +29,9 @@ Valuations of different options using different methods:
 - Valuations of exotic options like down-and-in barrier option
 - Sensitivity analysis
 
-### Machine learning
-Language: R. \
-Labs in Machine learning 
-- Lab 1 focuses on classification and prediction using KNN, linear regression, ridge regression and logistic regression.
-- Lab 2 covers advanced regression techniques (lasso) and classification methods (decision trees, SVM) for various applications.
-- Lab 3 covers kernel methods and neural networks for tasks like temperature prediction, spam classification and solving mathematical functions. 
 
-### Development of a large application of Region Östegötland
-Main languages: Python & TypeScript. \
-Collaborating with 25 other students and Region Östergötland, we made a large application for managing tasks and different teams within the healthcare sector in the region. 
 
 ### Others
 
-Java game: Made a game together with a friend. 
+Java game: Made a game in Java together with a friend. 
 
