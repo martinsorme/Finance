@@ -1,16 +1,21 @@
+% Data
 value_portfolio = 10000000;
-n = 15;
-n_observations = 1647;
+n_stocks        = 15;
+n_points        = 1647;
 
 data_table = readtable('timeSeries.xlsx');
 dates = data_table{:, 2};
 
-% ------ Question a
+% ---------------------- Question 1
+
+% ------- Task a
 
 % Calculate returns
-returns = zeros(n_observations-1, n);
-for i = 1:n
-    for j = 1:n_observations-1
+
+% Timeseries imported through excel
+returns = zeros(n_points-1, n_stocks);
+for i = 1:n_stocks
+    for j = 1:n_points-1
         returns(j,i)=(timeSeries(j+1,i)-timeSeries(j,i))/timeSeries(j,i);
     end
 end
@@ -26,12 +31,14 @@ var_95 = -mu_p + norminv(0.95) * sigma_portfolio * value_portfolio;
 var_97 = -mu_p + norminv(0.975) * sigma_portfolio * value_portfolio;
 var_99 = -mu_p + norminv(0.99) * sigma_portfolio * value_portfolio;
 
-
-% ------ Question b
+% ------- Task b
 
 % Calculations done in excel file
+
 EWMA_var_95 = readmatrix('timeSeries.xlsx', 'Sheet', 'Problem 1 and 2', 'Range', 'BV504:BV1649');
 EWMA_var_99 = readmatrix('timeSeries.xlsx', 'Sheet', 'Problem 1 and 2', 'Range', 'BW504:BW1649');
+
+% Plot EWMA Value At Risk
 
 figure(1)
 subplot(2, 1, 1);
@@ -44,24 +51,25 @@ plot(dates(503:1648), EWMA_var_99);
 title('EWMA VaR 99, 1v'); 
 ylabel('Relative Value at Risk (VaR)');
 
-
-
-% ------ Question c
+% ------- Task c
 
 weighted_returns = readmatrix('timeSeries.xlsx', 'Sheet', 'Problem 1 and 2', 'Range', 'AJ4:AJ1649');
 sigma_rolling = zeros((1647-502), 1);
 roll_var_95 = zeros((1647-502), 1);
 roll_var_99 = zeros((1647-502), 1);
 
+% Rolling Value At Risk
 for i = 502:1647
     list = sort(weighted_returns(i-501:i-2));
     roll_var_95(i-501) = -list(25);
     roll_var_99(i-501) = -list(5);
 end
 
+% Expected shortfall
 sorted_weighted_returns_500 = sort(weighted_returns(1646-499:1646)); 
 ES_95_1w = mean(sorted_weighted_returns_500(1:5)); 
 
+% Plot rolling Value At Risk
 figure(2);
 subplot(2, 1, 1);
 plot(dates(503:1648), roll_var_95);
@@ -74,7 +82,9 @@ title('Rolling window VaR 99, 1v');
 ylabel('Relative Value at Risk (VaR)');
 
 
-% ------ Question d
+% ------- Task d
+
+% Calculation of Value At Risk according to Hull & White
 
 sigma_HW = zeros(1646,1);
 % Initialize first sigma t = 2
@@ -112,10 +122,11 @@ title('Rolling Window VaR 99 (H&W)');
 ylabel('Relative Value at Risk (VaR)');
 
 
-% ------ Question e
+% ------- Task e
 
+% Failure tests
 
-% Failure test task b
+% Plotting where VaR was incorrect
 time_series_subset = timeSeries(502:1648);
 b_weighted_returns_subset = weighted_returns(501:1646);
 
@@ -126,10 +137,10 @@ b_above_var_index_95 = b_weighted_returns_subset >= -EWMA_var_95;
 
 figure(10);
 scatter(time_series_subset(b_below_var_index_95), b_weighted_returns_subset(b_below_var_index_95), 2, 'r'); % Red for points below -var_95_1w
-title("95 var");
+title("95 % VaR");
 hold on;
 scatter(time_series_subset(b_above_var_index_95), b_weighted_returns_subset(b_above_var_index_95), 2, 'b'); % Blue for points above -var_95_1w
-plot(timeSeries(503:1648), -EWMA_var_95, 'k'); % Plot -var_95_1w in black
+plot(timeSeries(503:1648), -EWMA_var_95, 'k');
 hold off;
 
 % 99 var
@@ -138,53 +149,35 @@ b_above_var_index_99 = b_weighted_returns_subset >= -EWMA_var_99;
 
 figure(11);
 scatter(time_series_subset(b_below_var_index_99), b_weighted_returns_subset(b_below_var_index_99), 2, 'r'); % Red for points below -var_95_1w
-title("99 var");
+title("99 % VaR");
 hold on;
 scatter(time_series_subset(b_above_var_index_99), b_weighted_returns_subset(b_above_var_index_99), 2, 'b'); % Blue for points above -var_95_1w
 plot(timeSeries(503:1648), -EWMA_var_99, 'k'); % Plot -var_95_1w in black
 hold off;
 
 
-%Failure-test task b
-b_fail_95=length(b_weighted_returns_subset(b_below_var_index_95))/length(b_weighted_returns_subset);
-b_fail_99=length(b_weighted_returns_subset(b_below_var_index_99))/length(b_weighted_returns_subset);
+% Hypothesis testing, task b
 
-z_b_95 = (length(b_weighted_returns_subset(b_below_var_index_95)) - length(b_weighted_returns_subset) * 0.05)/sqrt(length(b_weighted_returns_subset)*0.95);
-z_b_99 = (length(b_weighted_returns_subset(b_below_var_index_99)) - length(b_weighted_returns_subset) * 0.05)/sqrt(length(b_weighted_returns_subset)*0.99);
+h0_b_95 = calculate_failure_test(b_weighted_returns_subset, EWMA_var_95, 0.95, 0.95);
+h0_b_99 = calculate_failure_test(b_weighted_returns_subset, EWMA_var_99, 0.99, 0.95);
 
-h0_b_95 = (z_b_95 > norminv(0.975) || z_b_95 < norminv(1-0.975));
-h0_b_99 = (z_b_95 > norminv(0.975) || z_b_95 < norminv(1-0.975));
+% Hypothesis testing, task c
 
-% Failure-test task c
 c_weighted_returns_subset = weighted_returns(501:1646);
-c_below_var_index_95 = c_weighted_returns_subset < -roll_var_95;
-c_below_var_index_99 = c_weighted_returns_subset < -roll_var_99;
 
-c_fail_95=length(c_weighted_returns_subset(c_below_var_index_95))/length(c_weighted_returns_subset);
-c_fail_99=length(c_weighted_returns_subset(c_below_var_index_99))/length(c_weighted_returns_subset);
+h0_c_95 = calculate_failure_test(c_weighted_returns_subset, roll_var_95, 0.95, 0.95);
+h0_c_99 = calculate_failure_test(c_weighted_returns_subset, roll_var_99, 0.99, 0.95); 
 
-z_c_95 = (length(c_weighted_returns_subset(c_below_var_index_95)) - length(c_weighted_returns_subset) * 0.05)/sqrt(length(c_weighted_returns_subset)*0.95);
-z_c_99 = (length(c_weighted_returns_subset(c_below_var_index_95)) - length(c_weighted_returns_subset) * 0.05)/sqrt(length(c_weighted_returns_subset)*0.99);
 
-h0_c_95 = (z_b_95 > norminv(0.975) || z_b_95 < norminv(1-0.975));
-h0_c_99 = (z_b_95 > norminv(0.975) || z_b_95 < norminv(1-0.975));
+% Hypothesis testing, task d
 
-% Failure-test task d
 d_weighted_returns_subset = weighted_returns(502:1646);
-d_below_var_index_95 = d_weighted_returns_subset < -roll_var_95_HW;
-d_below_var_index_99 = d_weighted_returns_subset < -roll_var_99_HW;
 
-d_fail_95=length(c_weighted_returns_subset(d_below_var_index_95))/length(d_weighted_returns_subset);
-d_fail_99=length(c_weighted_returns_subset(d_below_var_index_99))/length(d_weighted_returns_subset);
-
-z_d_95 = (length(c_weighted_returns_subset(d_below_var_index_95)) - length(d_weighted_returns_subset) * 0.05)/sqrt(length(d_weighted_returns_subset)*0.95);
-z_d_99 = (length(c_weighted_returns_subset(d_below_var_index_95)) - length(d_weighted_returns_subset) * 0.05)/sqrt(length(d_weighted_returns_subset)*0.99);
-
-h0_d_95 = (z_b_95 > norminv(0.975) || z_b_95 < norminv(1-0.975));
-h0_d_99 = (z_b_95 > norminv(0.975) || z_b_95 < norminv(1-0.975));
+h0_d_95 = calculate_failure_test(d_weighted_returns_subset, roll_var_95_HW, 0.95, 0.95);
+h0_d_99 = calculate_failure_test(d_weighted_returns_subset, roll_var_95_HW, 0.99, 0.95);
 
 
-% ------ Question f
+% ------- Task f
 
 % Based on Christoffersen. 95%
 % n00, n01, n10, n11;
@@ -204,11 +197,12 @@ d_formula = -2 * log((1 - d_pi(1))^(d_n(1) + d_n(3)) * (d_pi(1)^(d_n(2) + d_n(4)
 
 
 
-% ----------------------- Task 2
+% ---------------------- Question 2
 
-% ------ Question a
+% ------- Task a
 sorted_returns = sort(weighted_returns); 
-% See excel, sheet Task2a for calculations and Solver
+
+% Calculations for the following done using Excel solver
 
 u_2a = -0.046733078437709;
 beta_2a = 0.0264395318140892;
@@ -217,40 +211,45 @@ max_log_likliehod_2a = 217.1042779;
 
 EVT_var_99 = u_2a + (beta_2a/xi_2a)*(((1646*0.99/82)^(-xi_2a))-1);
 
-% ------ Question b
+% ------- Task b
+
 sorted_returns_5y = sort(weighted_returns(1646-(5*52):1646));
-% Parameters calculated in Excel Solver
+
+% Calculations for the following done using Excel solver
+
 beta_2b = 0.01714773;
 xi_2b = 0.177146969;
 max_log_likliehod_2b = 233.988;
 
 
-% ----------------------- Task 3
-% ------ Question a
+% ----------------------- Question 3
+% ------- Task a
 
 SPX_delta = readmatrix('timeSeries.xlsx', 'Sheet', 'Problem 3', 'Range', 'G5:G3429');
 VIX_delta = readmatrix('timeSeries.xlsx', 'Sheet', 'Problem 3', 'Range', 'H5:H3429');
 LIBOR_delta = readmatrix('timeSeries.xlsx', 'Sheet', 'Problem 3', 'Range', 'I5:I3429');
-
-
 
 % Strike prices
 K1 = 4700;
 K2 = 4600;
 K3 = 4750;
 
+% Underlying asset price
 S = 4670.29; 
 
+% Time to maturity
 T1 = 49/252;
 T2 = 49/252; 
 T3 = 67/252;
 
+% Volatilities and risk-free rate
 r = 0.23829/100;
 vix = 19.4/100;
 v1 = 15.77/100;
 v2 = 18.28/100;
 v3 = 16.25/100;
 
+% Dividend rate
 q = 0.05; 
 
 data_matrix = [SPX_delta, VIX_delta, LIBOR_delta];
@@ -267,11 +266,6 @@ h = [10000; 10000; 20000];
 % Calculate portfolio value
 vp_option = h(1) * value_c1 + h(2) * value_p2 + h(3) * value_c3; 
 
-
-% [c1_delta, p1_delta] = blsdelta(S, K1, r, T1, v1, q);
-% [c2_delta, p2_delta] = blsdelta(S, K2, r, T2, v2, q); 
-% [c3_delta, p3_delta] = blsdelta(S, K3, r, T3, v3, q); 
-% [calculateDelta(S, K1, r, T1, v1, true, q), calculateDelta(S, K2, r, T2, v2, false, q), calculateDelta(S, K3, r, T3, v3, true, q)]; 
 delta_matrix = [calculateDelta(S, K1, r, T1, v1, true, q), calculateDelta(S, K2, r, T2, v2, false, q), calculateDelta(S, K3, r, T3, v3, true, q)]; 
 rho_matrix = [calculateRho(S, K1, r, T1, v1, true, q), calculateRho(S, K2, r, T2, v2, false, q), calculateRho(S, K3, r, T3, v3, true, q)]; 
 vega_matrix = [calculateVega(S, K1, r, T1, v1, q), calculateVega(S, K2, r, T2, v2, q), calculateVega(S, K3, r, T3, v3, q)]; 
@@ -282,13 +276,21 @@ sigma_estimate = sqrt((1/(vp_option^2)) * h' * G' * C_xi * G * h);
 
 var_port = norminv(0.99) * vp_option * sigma_estimate * sqrt(1/252); 
 
-% ------ Question b
+% ------- Task b
 
 h1_contribution = G' * C_xi * G * h/((sigma_estimate^2) * (vp_option^2));
 h2_contribution = G' * C_xi * G * h/((sigma_estimate^2) * (vp_option^2)); 
 h3_contribution = G' * C_xi * G * h/((sigma_estimate^2) * (vp_option^2)); 
 
-%C_xi är var(delta(xi))
+
+function h0 = calculate_failure_test(return_subset, roll_var, z_confidence, confidence)
+    % Returns two-sided failure test
+    below_var_index = return_subset < -roll_var;
+
+    z = (length(return_subset(below_var_index)) - length(return_subset) * (1-z_confidence))/sqrt(length(return_subset)*z_confidence);
+
+    h0 = (z > norminv(confidence + ((1 - confidence)/2)) || z < norminv(1 - confidence + ((1-confidence)/2)));
+end
 
 function [n, pi_95] = calculate_pi_95(below_var_index_95)
     % Returns pi, pi_01, pi_10, pi_11 in that order
