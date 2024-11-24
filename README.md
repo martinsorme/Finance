@@ -1,37 +1,62 @@
 # Personal GitHub Portfolio
 
-Welcome to my GitHub portfolio, where I share some of my work. \
-The portfolio covers the following areas: 
-### Machine learning
-Language: R. \
-Labs in Machine learning 
-- Lab 1 focuses on classification and prediction using KNN, linear regression, ridge regression and logistic regression.
-- Lab 2 covers advanced regression techniques (lasso) and classification methods (decision trees, SVM) for various applications.
-- Lab 3 covers kernel methods and neural networks for tasks like temperature prediction, spam classification and solving mathematical functions. 
+Welcome to my GitHub portfolio! Here, you’ll find a curated selection of projects showcasing my work.
 
-### Development of a large application of Region Östegötland
-Main languages: Python & TypeScript. \
-Collaborating with 25 other students and Region Östergötland, we made a large application for managing tasks and different teams within the healthcare sector in the region. 
+---
 
-### Financial risk 
-Language: MATLAB. \
-Portfolio metrics: 
-- Estimations of volatility and different types of methods for calculating Value at Risk (VaR).
-- The VaR methods include: Exponensionally Weighted Moving Average (EWMA), Hull & White, Rolling Window, Extreme Value Theory (EVT). 
-- Implementation of statistical tests for comparing returns to VaR estimates. 
+## Machine Learning
 
-### Financial markets and instruments
-Language: MATLAB. \
-Valuations of different options using different methods: 
-- European Call Option (Binomial and B&S valuation)
-- Calculations of implied volatility 
-- American & European Call Option with dividends valuation
-- Valuations of exotic options like down-and-in barrier option
-- Sensitivity analysis
+**Language:** R  
+A series of labs exploring diverse machine learning techniques:
 
+- **Lab 1:**
+  - Classification and prediction using KNN, linear regression, ridge regression, and logistic regression.
+- **Lab 2:**
+  - Advanced regression techniques (lasso) and classification methods, including decision trees and support vector machines (SVM).
+- **Lab 3:**
+  - Kernel methods and neural networks applied to:
+    - Temperature prediction
+    - Spam classification
+    - Solving mathematical functions
 
+---
 
-### Others
+## Financial Risk
 
-Java game: Made a game in Java together with a friend. 
+**Language:** MATLAB  
+Focused on portfolio risk metrics and Value at Risk (VaR) methodologies:
 
+- **Volatility Estimation:**
+  - Implemented various approaches to calculate VaR.
+- **VaR Methods:**
+  - Exponentially Weighted Moving Average (EWMA)
+  - Hull & White
+  - Rolling Window
+  - Extreme Value Theory (EVT)
+- **Statistical Testing:**
+  - Compared actual returns against VaR estimates.
+
+---
+
+## Financial Markets and Instruments
+
+**Language:** MATLAB  
+Valuation and sensitivity analysis for financial derivatives:
+
+- **European Call Options:**
+  - Valuation using Binomial and Black-Scholes models.
+- **Implied Volatility:**
+  - Performed calculations to determine implied volatility.
+- **American and European Options with Dividends:**
+  - Conducted pricing analysis.
+- **Exotic Options:**
+  - Valuation of down-and-in barrier options.
+- **Sensitivity Analysis:**
+  - Examined the sensitivity of option pricing to various parameters.
+
+---
+
+## Others
+
+- **Java Game Development:**  
+  Collaborated with a friend to create a Java-based game.
